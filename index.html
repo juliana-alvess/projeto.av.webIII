@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <style>
+        body, form {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>Frequência de Reunião</h1>
+        <form id="transcriptionForm" method="post" enctype="multipart/form-data">
+            <label for="fileInput">Envie um arquivo de transcrição:</label>
+            <input type="file" id="fileInput" accept=".txt,.doc,.docx,.pdf,.sbv" name="arquivo">
+        </form>
+        <button id="analyzeButton">Analisar</button>
+        <textarea id="lista" disabled></textarea>
+    </div>
+    <script>
+        document.getElementById('transcriptionForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Impede o envio padrão do formulário
+        });
+
+        document.getElementById('analyzeButton').addEventListener('click', function(event) {
+            event.preventDefault(); // Impede o envio padrão do botão
+            const lista = document.getElementById('lista');
+            fetch('http://localhost:3000/api/frequencia/', {
+                method: 'POST',
+                body: new FormData(document.getElementById('transcriptionForm'))
+            })
+            .then(response => response.json())
+            .then(data => {
+                lista.value = JSON.stringify(data);
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+            });
+        });
+    </script>
+</body>
+</html>
